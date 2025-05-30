@@ -4,7 +4,7 @@ import { getProductRecommendations } from '../lib/productMatcher';
 import { getCachedProducts } from '../lib/shopifySync';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.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,
 });
 
 export default async function handler(req, res) {
