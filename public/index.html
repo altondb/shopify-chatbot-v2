@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shopify AI Chatbot</title>
+</head>
+<body style="font-family: sans-serif; padding: 2rem;">
+  <h1>🧠 Shopify Chatbot Test</h1>
+  <div>
+    <textarea id="userInput" rows="4" cols="50" placeholder="Ask something..."></textarea><br/>
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  <div id="response" style="margin-top: 2rem;"></div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput").value;
+      const resDiv = document.getElementById("response");
+      resDiv.innerHTML = "⏳ Thinking...";
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: input,
+          conversationHistory: []
+        })
+      });
+
+      const data = await res.json();
+      resDiv.innerHTML = `<p><strong>Bot:</strong> ${data.message}</p>`;
+      
+      if (data.products?.length) {
+        resDiv.innerHTML += `<h3>Recommendations:</h3><ul>`;
+        data.products.forEach(p => {
+          resDiv.innerHTML += `<li><a href="${p.url}" target="_blank">${p.title}</a> - ${p.price}</li>`;
+        });
+        resDiv.innerHTML += `</ul>`;
+      }
+    }
+  </script>
+</body>
+</html>
