@@ -1,4 +1,3 @@
-// api/chat.js - Main chat endpoint
 import { OpenAI } from 'openai';
 import { getProductRecommendations } from '../lib/productMatcher';
 import { getCachedProducts } from '../lib/shopifySync';
@@ -15,20 +14,26 @@ export default async function handler(req, res) {
   try {
     const { message, conversationHistory = [] } = req.body;
 
-    // Get product catalog
-    const products = await getCachedProducts();
+    if (!message) {
+      return res.status(400).json({ message: 'Missing message field' });
+    }
 
-    // Create system prompt with product context
+    console.log('📩 Incoming message:', message);
+
+    // Load cached or fresh products
+    const products = await getCachedProducts();
+    console.log(`📦 Loaded ${products.length} products`);
+
+    // Construct system prompt
     const systemPrompt = createSystemPrompt(products);
 
-    // Build conversation
     const messages = [
       { role: 'system', content: systemPrompt },
       ...conversationHistory,
       { role: 'user', content: message }
     ];
 
-    // Call OpenAI
+    // OpenAI call
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
       messages,
@@ -41,10 +46,7 @@ export default async function handler(req, res) {
           parameters: {
             type: 'object',
             properties: {
-              query: {
-                type: 'string',
-                description: 'Search query to match products'
-              },
+              query: { type: 'string', description: 'Search query to match products' },
               preferences: {
                 type: 'array',
                 items: { type: 'string' },
@@ -66,30 +68,33 @@ export default async function handler(req, res) {
     const response = completion.choices[0];
     let recommendations = [];
 
-    // Handle function calls
-    if (response.message.function_call) {
-      const { query, preferences = [], max_results = 3 } = 
-        JSON.parse(response.message.function_call.arguments);
-      
-      recommendations = await getProductRecommendations(
-        products, 
-        query, 
-        preferences, 
-        max_results
-      );
+    if (response.message.function_call?.arguments) {
+      try {
+        const { query, preferences = [], max_results = 3 } = JSON.parse(response.message.function_call.arguments);
+        console.log('🧠 GPT wants to recommend with:', { query, preferences });
+
+        recommendations = await getProductRecommendations(
+          products,
+          query,
+          preferences,
+          max_results
+        );
+      } catch (parseError) {
+        console.error('❌ Failed to parse function_call arguments:', parseError);
+      }
+    } else {
+      console.warn('⚠️ GPT response missing function_call.arguments:', response.message);
     }
 
     res.status(200).json({
-      message: response.message.content || 'Here are my recommendations:',
+      message: response.message.content || 'Here are some products I recommend:',
       products: recommendations,
       conversationId: req.body.conversationId || generateId()
     });
 
   } catch (error) {
-    console.error('Chat API error:', error);
-    res.status(500).json({ 
-      message: 'Sorry, I encountered an error. Please try again.' 
-    });
+    console.error('🔥 Chat API error:', error);
+    res.status(500).json({ message: 'Internal Server Error – see logs' });
   }
 }
 
