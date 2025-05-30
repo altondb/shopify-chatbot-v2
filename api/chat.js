@@ -105,7 +105,7 @@ Your role:
 - Use the recommend_products function when you have enough information
 - Be conversational and friendly
 
-Available product categories: ${getUniqueCategories(products).join(', ')}
+Available product categories: /* ${getUniqueCategories(products).join(', ')} */
 
 Key guidelines:
 - Always use the function to make specific recommendations
