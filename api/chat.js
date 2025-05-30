@@ -1,3 +1,4 @@
+
 import { OpenAI } from 'openai';
 import { getProductRecommendations } from '../lib/productMatcher';
 import { getCachedProducts } from '../lib/shopifySync';
@@ -20,11 +21,9 @@ export default async function handler(req, res) {
 
     console.log('📩 Incoming message:', message);
 
-    // Load cached or fresh products
     const products = await getCachedProducts();
     console.log(`📦 Loaded ${products.length} products`);
 
-    // Construct system prompt
     const systemPrompt = createSystemPrompt(products);
 
     const messages = [
@@ -33,7 +32,6 @@ export default async function handler(req, res) {
       { role: 'user', content: message }
     ];
 
-    // OpenAI call
     const completion = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
       messages,
@@ -99,7 +97,7 @@ export default async function handler(req, res) {
 }
 
 function createSystemPrompt(products) {
-  return `You are a helpful product recommendation assistant for a fragrance/cosmetics store. 
+  return \`You are a helpful product recommendation assistant for a fragrance/cosmetics store. 
 
 Your role:
 - Help users find products based on their preferences
@@ -107,13 +105,13 @@ Your role:
 - Use the recommend_products function when you have enough information
 - Be conversational and friendly
 
-Available product categories: ${getUniqueCategories(products).join(', ')}
+Available product categories: \${getUniqueCategories(products).join(', ')}
 
 Key guidelines:
 - Always use the function to make specific recommendations
 - Keep responses concise but helpful
 - Focus on scent profiles, ingredients, and use cases
-- Ask about preferences like: scent families, occasions, skin type, etc.`;
+- Ask about preferences like: scent families, occasions, skin type, etc.\`;
 }
 
 function getUniqueCategories(products) {
