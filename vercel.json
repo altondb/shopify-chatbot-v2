@@ -8,10 +8,4 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
-  "env": {
-    "OPENAI_API_KEY": "OPENAI_API_KEY",
-    "SHOPIFY_DOMAIN": "ff8h0b-ji.myshopify.com",
-    "SHOPIFY_ACCESS_TOKEN": "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",
-    "SYNC_SECRET": "Britney-Spears-4ever"
-  }
 }
