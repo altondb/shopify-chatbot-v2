@@ -1,9 +1,13 @@
 {
+  "version": 2,
   "functions": {
     "api/**/*.js": {
       "maxDuration": 30
     }
   },
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" }
+  ],
   "env": {
     "OPENAI_API_KEY": "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",
     "SHOPIFY_DOMAIN": "ff8h0b-ji.myshopify.com",
