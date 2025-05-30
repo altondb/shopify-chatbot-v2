@@ -105,7 +105,7 @@ Your role:
 - Use the recommend_products function when you have enough information
 - Be conversational and friendly
 
-Available product categories: /* ${getUniqueCategories(products).join(', ')} */
+Available product categories: 
 
 Key guidelines:
 - Always use the function to make specific recommendations
@@ -113,9 +113,6 @@ Key guidelines:
 - Focus on scent profiles, ingredients, and use cases
 - Ask about preferences like: scent families, occasions, skin type, etc.`;
 }
-
-function getUniqueCategories(products) {
-  return [...new Set(products.map(p => p.product_type).filter(Boolean))];
 }
 
 function generateId() {
