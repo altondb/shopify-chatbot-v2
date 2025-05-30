@@ -5,6 +5,16 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
+  // Add CORS headers for Shopify
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -19,10 +29,11 @@ export default async function handler(req, res) {
     const messages = [
       {
         role: 'system',
-        content: `You are a friendly and helpful fragrance expert.
+        content: `You are a friendly and helpful fragrance expert for a perfume store.
 You give recommendations and opinions about perfumes based on user preferences.
 
 You can talk about scent families (e.g., woody, citrus, gourmand), seasonal scents, layering tips, popular brands, and what a perfume is good for (e.g., date night, work, gym).
+
 Ask clarifying questions if the user doesn't provide enough detail. Be engaging and fun.`,
       },
       ...conversationHistory,
