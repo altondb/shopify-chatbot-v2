@@ -1,7 +1,7 @@
 
 import { OpenAI } from 'openai';
-import { getProductRecommendations } from '../lib/productMatcher';
-import { getCachedProducts } from '../lib/shopifySync';
+import { getProductRecommendations } from '../lib/productMatcher.js';
+import { getCachedProducts } from '../lib/shopifySync.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
