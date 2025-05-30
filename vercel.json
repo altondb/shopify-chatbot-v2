@@ -9,7 +9,7 @@
     { "src": "/api/(.*)", "dest": "/api/$1" }
   ],
   "env": {
-    "OPENAI_API_KEY": "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",
+    "OPENAI_API_KEY": "OPENAI_API_KEY",
     "SHOPIFY_DOMAIN": "ff8h0b-ji.myshopify.com",
     "SHOPIFY_ACCESS_TOKEN": "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",
     "SYNC_SECRET": "Britney-Spears-4ever"
