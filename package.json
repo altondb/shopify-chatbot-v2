@@ -1,0 +1,16 @@
+{
+  "name": "shopify-ai-chatbot",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "openai": "^4.28.0",
+    "@vercel/kv": "^1.0.1"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
